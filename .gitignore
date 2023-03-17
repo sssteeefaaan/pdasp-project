@@ -173,6 +173,7 @@ fabric-samples/
 **/peerOrganizations/
 **/ordererOrganizations/
 **/fabric-ca/*rg*/
+**/system-genesis-block/
 *.tar*
 *.jpg
 *.png
