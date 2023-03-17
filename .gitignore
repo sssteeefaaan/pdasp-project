@@ -168,10 +168,12 @@ go.work
 
 
 ###############################
-channel-artifacts/
-peerOrganizations/
-ordererOrganizations/
-fabric-ca/*rg*
+fabric-samples/
+**/channel-artifacts/
+**/peerOrganizations/
+**/ordererOrganizations/
+**/fabric-ca/*rg*/
+*.tar*
 *.jpg
 *.png
 *.jpeg
