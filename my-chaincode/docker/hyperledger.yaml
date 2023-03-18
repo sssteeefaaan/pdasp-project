@@ -54,9 +54,9 @@ services:
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: orderer
     volumes:
-        - ${SYSTEM_GENESIS_BLOCK_PATH}/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
-        - ${ORGANIZATIONS_PATH}/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp
-        - ${ORGANIZATIONS_PATH}/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls
+        - /home/stefan/pdasp-project/my-chaincode/system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - /home/stefan/pdasp-project/my-chaincode/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp
+        - /home/stefan/pdasp-project/my-chaincode/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls
         - orderer.example.com:/var/hyperledger/production/orderer
     ports:
       - 7000:7000
@@ -78,7 +78,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb10:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer0.org1.example.com
       - CORE_PEER_ADDRESS=peer0.org1.example.com:7050
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7050
@@ -100,6 +103,17 @@ services:
       - 9910:9910
     networks:
       - test
+    depends_on:
+      - couchdb10
+
+  couchdb10:
+    container_name: couchdb10
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer1.org1.example.com:
     container_name: peer1.org1.example.com
@@ -115,7 +129,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb11:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer1.org1.example.com
       - CORE_PEER_ADDRESS=peer1.org1.example.com:7051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
@@ -137,6 +154,17 @@ services:
       - 9911:9911
     networks:
       - test
+    depends_on:
+      - couchdb11
+
+  couchdb11:
+    container_name: couchdb11
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer2.org1.example.com:
     container_name: peer2.org1.example.com
@@ -152,7 +180,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb12:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer2.org1.example.com
       - CORE_PEER_ADDRESS=peer2.org1.example.com:7052
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7052
@@ -174,6 +205,17 @@ services:
       - 9912:9912
     networks:
       - test
+    depends_on:
+      - couchdb12
+
+  couchdb12:
+    container_name: couchdb12
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer3.org1.example.com:
     container_name: peer3.org1.example.com
@@ -189,7 +231,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb13:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer3.org1.example.com
       - CORE_PEER_ADDRESS=peer3.org1.example.com:7053
       - CORE_PEER_LISTENADDRESS=0.0.0.0:7053
@@ -211,6 +256,17 @@ services:
       - 9913:9913
     networks:
       - test
+    depends_on:
+      - couchdb13
+
+  couchdb13:
+    container_name: couchdb13
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer0.org2.example.com:
     container_name: peer0.org2.example.com
@@ -226,7 +282,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb20:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer0.org2.example.com
       - CORE_PEER_ADDRESS=peer0.org2.example.com:8050
       - CORE_PEER_LISTENADDRESS=0.0.0.0:8050
@@ -248,6 +307,17 @@ services:
       - 9920:9920
     networks:
       - test
+    depends_on:
+      - couchdb20
+
+  couchdb20:
+    container_name: couchdb20
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer1.org2.example.com:
     container_name: peer1.org2.example.com
@@ -263,7 +333,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb21:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer1.org2.example.com
       - CORE_PEER_ADDRESS=peer1.org2.example.com:8051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
@@ -285,6 +358,17 @@ services:
       - 9921:9921
     networks:
       - test
+    depends_on:
+      - couchdb21
+
+  couchdb21:
+    container_name: couchdb21
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer2.org2.example.com:
     container_name: peer2.org2.example.com
@@ -300,7 +384,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb22:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer2.org2.example.com
       - CORE_PEER_ADDRESS=peer2.org2.example.com:8052
       - CORE_PEER_LISTENADDRESS=0.0.0.0:8052
@@ -322,6 +409,17 @@ services:
       - 9922:9922
     networks:
       - test
+    depends_on:
+      - couchdb22
+
+  couchdb22:
+    container_name: couchdb22
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer3.org2.example.com:
     container_name: peer3.org2.example.com
@@ -337,7 +435,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb23:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer3.org2.example.com
       - CORE_PEER_ADDRESS=peer3.org2.example.com:8053
       - CORE_PEER_LISTENADDRESS=0.0.0.0:8053
@@ -359,6 +460,17 @@ services:
       - 9923:9923
     networks:
       - test
+    depends_on:
+      - couchdb23
+
+  couchdb23:
+    container_name: couchdb23
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer0.org3.example.com:
     container_name: peer0.org3.example.com
@@ -374,7 +486,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb30:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer0.org3.example.com
       - CORE_PEER_ADDRESS=peer0.org3.example.com:9050
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9050
@@ -396,6 +511,17 @@ services:
       - 9930:9930
     networks:
       - test
+    depends_on:
+      - couchdb30
+
+  couchdb30:
+    container_name: couchdb30
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer1.org3.example.com:
     container_name: peer1.org3.example.com
@@ -411,7 +537,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb31:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer1.org3.example.com
       - CORE_PEER_ADDRESS=peer1.org3.example.com:9051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
@@ -433,6 +562,17 @@ services:
       - 9931:9931
     networks:
       - test
+    depends_on:
+      - couchdb31
+
+  couchdb31:
+    container_name: couchdb31
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer2.org3.example.com:
     container_name: peer2.org3.example.com
@@ -448,7 +588,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb32:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer2.org3.example.com
       - CORE_PEER_ADDRESS=peer2.org3.example.com:9052
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9052
@@ -470,6 +613,17 @@ services:
       - 9932:9932
     networks:
       - test
+    depends_on:
+      - couchdb32
+
+  couchdb32:
+    container_name: couchdb32
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer3.org3.example.com:
     container_name: peer3.org3.example.com
@@ -485,7 +639,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb33:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer3.org3.example.com
       - CORE_PEER_ADDRESS=peer3.org3.example.com:9053
       - CORE_PEER_LISTENADDRESS=0.0.0.0:9053
@@ -507,6 +664,17 @@ services:
       - 9933:9933
     networks:
       - test
+    depends_on:
+      - couchdb33
+
+  couchdb33:
+    container_name: couchdb33
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer0.org4.example.com:
     container_name: peer0.org4.example.com
@@ -522,7 +690,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb40:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer0.org4.example.com
       - CORE_PEER_ADDRESS=peer0.org4.example.com:10050
       - CORE_PEER_LISTENADDRESS=0.0.0.0:10050
@@ -544,6 +715,17 @@ services:
       - 9940:9940
     networks:
       - test
+    depends_on:
+      - couchdb40
+
+  couchdb40:
+    container_name: couchdb40
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer1.org4.example.com:
     container_name: peer1.org4.example.com
@@ -559,7 +741,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb41:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer1.org4.example.com
       - CORE_PEER_ADDRESS=peer1.org4.example.com:10051
       - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
@@ -581,6 +766,17 @@ services:
       - 9941:9941
     networks:
       - test
+    depends_on:
+      - couchdb41
+
+  couchdb41:
+    container_name: couchdb41
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer2.org4.example.com:
     container_name: peer2.org4.example.com
@@ -596,7 +792,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb42:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer2.org4.example.com
       - CORE_PEER_ADDRESS=peer2.org4.example.com:10052
       - CORE_PEER_LISTENADDRESS=0.0.0.0:10052
@@ -618,6 +817,17 @@ services:
       - 9942:9942
     networks:
       - test
+    depends_on:
+      - couchdb42
+
+  couchdb42:
+    container_name: couchdb42
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
+    networks:
+      - test
 
   peer3.org4.example.com:
     container_name: peer3.org4.example.com
@@ -633,7 +843,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb43:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer3.org4.example.com
       - CORE_PEER_ADDRESS=peer3.org4.example.com:10053
       - CORE_PEER_LISTENADDRESS=0.0.0.0:10053
@@ -653,6 +866,17 @@ services:
     ports:
       - 10053:10053
       - 9943:9943
+    networks:
+      - test
+    depends_on:
+      - couchdb43
+
+  couchdb43:
+    container_name: couchdb43
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
     networks:
       - test
 

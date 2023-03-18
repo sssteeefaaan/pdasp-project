@@ -1,0 +1,16 @@
+[
+    {
+         "name": "automobiles",
+         "policy": "OR('Org1MSP.member', 'Org2MSP.member', 'Org3MSP.member', 'Org4MSP.member')",
+         "requiredPeerCount": 0,
+         "maxPeerCount": 4,
+         "blockToLive": 1000
+    },
+    {
+         "name": "people",
+         "policy": "OR('Org1MSP.member', 'Org2MSP.member', 'Org3MSP.member', 'Org4MSP.member')",
+         "requiredPeerCount": 0,
+         "maxPeerCount": 4,
+         "blockToLive": 1000
+    }
+]

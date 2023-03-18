@@ -295,7 +295,7 @@ volumes:
       echo "  peer$j.org$i.example.com:" >> $DOCKER_COMPOSE_FILE_PATH
     done
   done
-  echo '
+  echo "
 networks:
   test:
     name: fabric_test
@@ -336,7 +336,7 @@ services:
       - 9900:9900
     networks:
       - test
-' >>$DOCKER_COMPOSE_FILE_PATH
+" >>$DOCKER_COMPOSE_FILE_PATH
 
       for ((i = 1; i <= $ORGANIZATION_NUMBER ; ++i)) do
         for ((j = 0; j < $PEER_PER_ORGANIZATION_NUMBER; ++j)) do
@@ -354,7 +354,10 @@ services:
       - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
       - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
       - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
-      # Peer specific variabes
+      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb$i$j:5984
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_USERNAME=admin
+      - CORE_LEDGER_STATE_COUCHDBCONFIG_PASSWORD=adminpw
       - CORE_PEER_ID=peer$j.org$i.example.com
       - CORE_PEER_ADDRESS=peer$j.org$i.example.com:$((6 + $i))05$j
       - CORE_PEER_LISTENADDRESS=0.0.0.0:$((6 + $i))05$j
@@ -374,6 +377,17 @@ services:
     ports:
       - $((6 + $i))05$j:$((6 + $i))05$j
       - 99$i$j:99$i$j
+    networks:
+      - test
+    depends_on:
+      - couchdb$i$j
+
+  couchdb$i$j:
+    container_name: couchdb$i$j
+    image: couchdb:3.1.1
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=adminpw
     networks:
       - test
 " >>$DOCKER_COMPOSE_FILE_PATH
@@ -506,24 +520,27 @@ function deployCC() {
 # Tear down running network
 function networkDown() {
   # stop containers
-  docker-compose -f $DOCKER_COMPOSE_FILE_PATH down --volumes --remove-orphans
+  docker-compose -f $DOCKER_COMPOSE_FILE_PATH -f $DOCKER_COMPOSE_CA_FILE_PATH down --volumes --remove-orphans
   # Don't remove the generated artifacts -- note, the ledgers are always removed
-  if [ "$MODE" != "restart" ]; then
-    # Bring down the network, deleting the volumes
-    #Cleanup the chaincode containers
-    clearContainers
-    #Cleanup images
-    removeUnwantedImages
-    # remove orderer block and other channel configuration transactions and certs
-    docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf ${SYSTEM_GENESIS_BLOCK_PATH}/*.block ${ORGANIZATIONS_PATH}/peerOrganizations ${ORGANIZATIONS_PATH}/ordererOrganizations'
-    ## remove fabric ca artifacts
-    for ((i=1 ; i <= ${ORGANIZATION_NUMBER}; ++i))
-    do
-      docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf ${ORGANIZATIONS_PATH}/fabric-ca/org$i/msp organizations/fabric-ca/org$i/tls-cert.pem ${ORGANIZATIONS_PATH}/fabric-ca/org$i/ca-cert.pem ${ORGANIZATIONS_PATH}/fabric-ca/org$i/IssuerPublicKey ${ORGANIZATIONS_PATH}/fabric-ca/org$i/IssuerRevocationPublicKey ${ORGANIZATIONS_PATH}/fabric-ca/org$i/fabric-ca-server.db'
-    done
-    # remove channel and script artifacts
-    docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf ${CHANNEL_ARTIFACTS_PATH} log.txt *.tar.gz'
-  fi
+  clearContainers
+  #Cleanup images
+  removeUnwantedImages
+  # remove orderer block and other channel configuration transactions and certs
+  docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf ${SYSTEM_GENESIS_BLOCK_PATH}/*.block ${ORGANIZATIONS_PATH}/peerOrganizations ${ORGANIZATIONS_PATH}/ordererOrganizations'
+  ## remove fabric ca artifacts
+  for ((i=1 ; i <= ${ORGANIZATION_NUMBER}; ++i))
+  do
+    docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf ${ORGANIZATIONS_PATH}/fabric-ca/org$i/msp organizations/fabric-ca/org$i/tls-cert.pem ${ORGANIZATIONS_PATH}/fabric-ca/org$i/ca-cert.pem ${ORGANIZATIONS_PATH}/fabric-ca/org$i/IssuerPublicKey ${ORGANIZATIONS_PATH}/fabric-ca/org$i/IssuerRevocationPublicKey ${ORGANIZATIONS_PATH}/fabric-ca/org$i/fabric-ca-server.db'
+  done
+  # remove channel and script artifacts
+  docker run --rm -v $(pwd):/data busybox sh -c 'cd /data && rm -rf ${CHANNEL_ARTIFACTS_PATH} log.txt *.tar.gz'
+
+  sudo rm -r \
+  ${ORGANIZATIONS_PATH}/peerOrganizations/* \
+  ${ORGANIZATIONS_PATH}/ordererOrganizations/* \
+  ${ORGANIZATIONS_PATH}/fabric-ca/*rg* \
+  ${PWD}/channel-artifacts/* \
+  ${SYSTEM_GENESIS_BLOCK_PATH}/*
 }
 
 # Obtain the OS and Architecture string that will be used to select the correct
@@ -566,7 +583,7 @@ IMAGETAG="latest"
 # default ca image tag
 CA_IMAGETAG="latest"
 # default database
-DATABASE="leveldb"
+DATABASE="couchdb"
 
 # Parse commandline args
 

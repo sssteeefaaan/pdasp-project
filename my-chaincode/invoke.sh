@@ -6,7 +6,7 @@ peer chaincode invoke \
 --tls \
 --cafile "${PWD}/organizations/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem" \
 -C pdasp \
--n basic \
+-n blockchain \
 --peerAddresses localhost:7050 \
 --tlsRootCertFiles "${PWD}/organizations/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt" \
 --peerAddresses localhost:8050 \
