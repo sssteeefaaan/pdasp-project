@@ -1,13 +1,3 @@
-.purple{
-    background-color: rgb(245, 198, 245);
-}
-
-.white{
-    color: rgb(202, 242, 251);
-}
-
-.c-center{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+body{
+    background-color: rgb(245, 212, 245);
 }
